@@ -6,7 +6,9 @@ namespace Janos_Nagy_Lab2.Models
     {
         public int ID { get; set; }
         [Display(Name = "Author")]
-        public string AuthorName { get; set; }
+        public string? AuthorName { get; set; }
         public ICollection<Book>? Books { get; set; } //navigation property
+        public string? LastName { get; set; }
+        public string? FirstName { get; set; }
     }
 }
