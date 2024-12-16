@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Janos_Nagy_Lab2.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Janos_Nagy_Lab2.Data;
-using Janos_Nagy_Lab2.Models;
 
 namespace Janos_Nagy_Lab2.Pages.Categories
 {
@@ -19,11 +13,30 @@ namespace Janos_Nagy_Lab2.Pages.Categories
             _context = context;
         }
 
-        public IList<Category> Category { get;set; } = default!;
+        public IList<Category> Categories { get; set; } = new List<Category>();
+        public IList<Book> Books { get; set; } = new List<Book>();
+        public int SelectedCategoryID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id)
         {
-            Category = await _context.Category.ToListAsync();
+            // Load categories
+            Categories = await _context.Category
+                .Include(c => c.BookCategories)
+                    .ThenInclude(bc => bc.Book)
+                .ToListAsync() ?? new List<Category>();
+
+            // Check for selected category
+            if (id != null)
+            {
+                SelectedCategoryID = id.Value;
+
+                // Find books in the selected category
+                var selectedCategory = Categories.FirstOrDefault(c => c.ID == id.Value);
+                if (selectedCategory != null && selectedCategory.BookCategories != null)
+                {
+                    Books = selectedCategory.BookCategories.Select(bc => bc.Book).ToList();
+                }
+            }
         }
     }
 }
