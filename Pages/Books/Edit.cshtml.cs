@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Janos_Nagy_Lab2.Data;
 using Janos_Nagy_Lab2.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Janos_Nagy_Lab2.Pages.Books
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : BookCategoriesPageModel
     {
         private readonly Janos_Nagy_Lab2.Data.Janos_Nagy_Lab2Context _context;
